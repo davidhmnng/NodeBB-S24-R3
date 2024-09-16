@@ -132,12 +132,37 @@ define('forum/register', [
                     showSuccess(username_notify, successIcon);
                 } else {
                     showError(username_notify, '[[error:username-taken]]');
+                    suggestAlternativeUsernames(username);
+
                 }
 
                 callback();
             });
         }
     }
+    function suggestAlternativeUsernames(username) {
+        const suggestions = [];
+        const randomNum = Math.floor(100 + Math.random() * 900); // Random 3-digit number
+    
+        // Suggest three alternative usernames by appending numbers or common variations
+        suggestions.push(username + randomNum);
+        suggestions.push(username + '_user');
+        suggestions.push(username + randomNum + '_1');
+    
+        const suggestionEl = $('#username-suggestions');
+        suggestionEl.html(''); // Clear previous suggestions
+    
+        suggestions.forEach(suggestion => {
+            const suggestionItem = $('<li>').text(suggestion).on('click', function () {
+                $('#username').val(suggestion);
+                validateUsername(suggestion); // Validate the new suggestion
+            });
+            suggestionEl.append(suggestionItem);
+        });
+    
+        $('#username-suggestion-box').removeClass('hidden'); // Show suggestion box
+    }
+    
 
     function validatePassword(password, password_confirm) {
         const password_notify = $('#password-notify');
